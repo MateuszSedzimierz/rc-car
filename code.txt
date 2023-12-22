@@ -1,0 +1,117 @@
+#include <ESP8266WiFi.h>
+
+// Motor pins
+#define PWM_A D1
+#define D_A D3
+#define PWM_B D2
+#define D_B D4
+
+// Blynk: copy from page
+#define BLYNK_TEMPLATE_ID ""
+#define BLYNK_TEMPLATE_NAME ""
+#define BLYNK_AUTH_TOKEN ""
+
+#include <BlynkSimpleEsp8266.h>
+
+// #define BLYNK_PRINT Serial
+
+// WiFi ssid and password
+char ssid[] = "";
+char pass[] = "";
+
+int MAX_SPEED = 255;
+
+BLYNK_WRITE(V0)
+{
+  int pinValue = param.asInt();
+
+  if (pinValue == 1) {
+    up();
+  } else {
+    stop();
+  }
+}
+
+BLYNK_WRITE(V1)
+{
+  int pinValue = param.asInt();
+
+  if (pinValue == 1) {
+    down();
+  } else {
+    stop();
+  }
+}
+
+BLYNK_WRITE(V2)
+{
+  int pinValue = param.asInt();
+
+  if (pinValue == 1) {
+    right();
+  } else {
+    stop();
+  }
+}
+
+BLYNK_WRITE(V3)
+{
+  int pinValue = param.asInt();
+
+  if (pinValue == 1) {
+    left();
+  } else {
+    stop();
+  }
+}
+
+void up() {
+  digitalWrite(D_A, LOW);
+  digitalWrite(D_B, HIGH);
+  analogWrite(PWM_A, MAX_SPEED);
+  analogWrite(PWM_B, MAX_SPEED);
+}
+
+void down() {
+  digitalWrite(D_A, HIGH);
+  digitalWrite(D_B, LOW);
+  analogWrite(PWM_A, MAX_SPEED);
+  analogWrite(PWM_B, MAX_SPEED);
+}
+
+void right() {
+  digitalWrite(D_A, LOW);
+  digitalWrite(D_B, HIGH);
+  digitalWrite(PWM_A, LOW);
+  analogWrite(PWM_B, MAX_SPEED);
+}
+
+void left() {
+  digitalWrite(D_A, HIGH);
+  digitalWrite(D_B, HIGH);
+  analogWrite(PWM_A, MAX_SPEED);
+  digitalWrite(PWM_B, LOW);
+}
+
+void stop() {
+  digitalWrite(D_A, LOW);
+  digitalWrite(D_B, LOW);
+  digitalWrite(PWM_A, LOW);
+  digitalWrite(PWM_B, LOW);
+}
+
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(PWM_A, OUTPUT);
+  pinMode(D_A, OUTPUT);
+  pinMode(PWM_B, OUTPUT);
+  pinMode(D_B, OUTPUT);
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+}
+
+void loop()
+{
+  Blynk.run();
+}
+
